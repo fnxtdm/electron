@@ -41,7 +41,12 @@ jobs:
         mkdir -p "${GIT_CACHE_PATH}"
 
         gclient config --name "src/electron" --unmanaged https://github.com/fnxtdm/electron
-        gclient sync -f
+        gclient sync --with_branch_heads --with_tags
+        
+        cd src/electron/
+        git checkout v12.0.1
+        cd -
+
         cd src
         export CHROMIUM_BUILDTOOLS_PATH=`pwd`/buildtools
         gn gen out/Release --args="import(\"//electron/build/args/release.gn\") $GN_EXTRA_ARGS"
