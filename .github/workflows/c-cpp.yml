@@ -45,6 +45,7 @@ jobs:
         
         cd src/electron/
         git checkout v12.0.1
+        gclient sync -f
         cd -
 
         cd src
