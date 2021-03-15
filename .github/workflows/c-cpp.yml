@@ -44,7 +44,7 @@ jobs:
         gclient sync --with_branch_heads --with_tags
         
         cd src/electron/
-        git checkout v12.0.1
+        git checkout v10.4.0
         gclient sync -f
         cd -
 
