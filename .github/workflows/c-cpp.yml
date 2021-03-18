@@ -4,7 +4,7 @@ on:
   push:
     branches: [ v10.4.0.1 ]
   pull_request:
-    branches: [ master ]
+    branches: [ v10.4.0.1 ]
 
 defaults:
   run:
