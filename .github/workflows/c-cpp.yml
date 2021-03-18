@@ -37,9 +37,7 @@ jobs:
         export PATH=/opt/depot_tools:/opt/actions-runner/_work/electron/electron/node-v15.10.0-linux-x64/bin:$PATH
         echo "$PATH"
         echo yes| npx @electron/check-python-tls
-        export GIT_CACHE_PATH="${HOME}/.git_cache"
-        mkdir -p "${GIT_CACHE_PATH}"
-
+        
         gclient config --name "src/electron" --unmanaged https://github.com/fnxtdm/electron
         mkdir -p src/electron/
         cd src/electron/ 
@@ -49,10 +47,12 @@ jobs:
 
     - name: gclient sync
       run: |
+        export GIT_CACHE_PATH="${HOME}/.git_cache"
+        mkdir -p "${GIT_CACHE_PATH}"
+
         export PATH=/opt/depot_tools:/opt/actions-runner/_work/electron/electron/node-v15.10.0-linux-x64/bin:$PATH
         #gclient sync --with_branch_heads --with_tags
         cd src/electron/
-        #git checkout v10.4.0.1
         gclient sync -f
         cd -
 
