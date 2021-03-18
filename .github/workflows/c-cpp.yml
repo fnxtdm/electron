@@ -38,12 +38,9 @@ jobs:
         echo "$PATH"
         echo yes| npx @electron/check-python-tls
         
-        gclient config --name "src/electron" --unmanaged https://github.com/fnxtdm/electron
+        gclient config --name "src/electron" --unmanaged https://github.com/fnxtdm/electron@v10.4.0.1
         mkdir -p src/electron/
         cd src/electron/ 
-    - uses: actions/checkout@v2
-      with:
-        path: './src/electron/'
 
     - name: gclient sync
       run: |
@@ -55,6 +52,10 @@ jobs:
         cd src/electron/
         gclient sync -f
         cd -
+
+    - uses: actions/checkout@v2
+      with:
+        path: './src/electron/'
 
     - name: ninja build
       run: |
