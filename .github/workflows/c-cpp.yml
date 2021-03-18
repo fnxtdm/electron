@@ -8,7 +8,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./
+    working-directory: ./electron/
 
 jobs:
   build:
@@ -18,6 +18,7 @@ jobs:
       DEPOT_TOOLS_PATH: /opt/depot_tools/
 
     steps:
+    - uses: actions/checkout@v2
     - name: path
       run: realpath .
 
@@ -41,10 +42,11 @@ jobs:
         mkdir -p "${GIT_CACHE_PATH}"
 
         gclient config --name "src/electron" --unmanaged https://github.com/fnxtdm/electron
+
         gclient sync --with_branch_heads --with_tags
         
         cd src/electron/
-        git checkout v10.4.0.1
+        #git checkout v10.4.0.1
         gclient sync -f
         cd -
 
