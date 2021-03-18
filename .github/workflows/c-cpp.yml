@@ -39,24 +39,19 @@ jobs:
         echo yes| npx @electron/check-python-tls
         
         gclient config --name "src/electron" --unmanaged https://github.com/fnxtdm/electron@v10.4.0.1
-        mkdir -p src/electron/
-        cd src/electron/ 
 
     - name: gclient sync
       run: |
         export GIT_CACHE_PATH="${HOME}/.git_cache"
         mkdir -p "${GIT_CACHE_PATH}"
         rm -rf "${GIT_CACHE_PATH}"/github.com-fnxtdm-electron*
+        rm -rf src/electron/
 
         export PATH=/opt/depot_tools:/opt/actions-runner/_work/electron/electron/node-v15.10.0-linux-x64/bin:$PATH
         cd src/electron/
         #gclient sync --with_branch_heads --with_tags
         gclient sync -f
         cd -
-
-        #- uses: actions/checkout@v2
-        #with:
-        #path: './src/electron/'
 
     - name: ninja build
       run: |
