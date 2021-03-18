@@ -8,7 +8,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./electron/
+    working-directory: ./
 
 jobs:
   build:
@@ -18,7 +18,6 @@ jobs:
       DEPOT_TOOLS_PATH: /opt/depot_tools/
 
     steps:
-    - uses: actions/checkout@v2
     - name: path
       run: realpath .
 
@@ -42,14 +41,21 @@ jobs:
         mkdir -p "${GIT_CACHE_PATH}"
 
         gclient config --name "src/electron" --unmanaged https://github.com/fnxtdm/electron
+        mkdir -p src/electron/
+        cd src/electron/ 
+    - uses: actions/checkout@v2
 
-        gclient sync --with_branch_heads --with_tags
-        
+    - name: gclient sync
+      run: |
+        export PATH=/opt/depot_tools:/opt/actions-runner/_work/electron/electron/node-v15.10.0-linux-x64/bin:$PATH
+        #gclient sync --with_branch_heads --with_tags
         cd src/electron/
         #git checkout v10.4.0.1
         gclient sync -f
         cd -
 
+    - name: ninja build
+        export PATH=/opt/depot_tools:/opt/actions-runner/_work/electron/electron/node-v15.10.0-linux-x64/bin:$PATH
         cd src
         export CHROMIUM_BUILDTOOLS_PATH=`pwd`/buildtools
         gn gen out/Release --args="import(\"//electron/build/args/release.gn\") $GN_EXTRA_ARGS"
