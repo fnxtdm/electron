@@ -18,6 +18,7 @@ jobs:
       DEPOT_TOOLS_PATH: /opt/depot_tools/
 
     steps:
+    - uses: actions/checkout@v2
     - name: path
       run: realpath .
 
