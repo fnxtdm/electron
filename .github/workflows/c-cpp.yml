@@ -2,7 +2,7 @@ name: Linux C/C++ CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ v10.4.0.1 ]
   pull_request:
     branches: [ master ]
 
@@ -44,7 +44,7 @@ jobs:
         gclient sync --with_branch_heads --with_tags
         
         cd src/electron/
-        git checkout v10.4.0
+        git checkout v10.4.0.1
         gclient sync -f
         cd -
 
