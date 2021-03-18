@@ -44,6 +44,8 @@ jobs:
         mkdir -p src/electron/
         cd src/electron/ 
     - uses: actions/checkout@v2
+      with:
+        path: './src/electron/'
 
     - name: gclient sync
       run: |
@@ -55,6 +57,7 @@ jobs:
         cd -
 
     - name: ninja build
+      run: |
         export PATH=/opt/depot_tools:/opt/actions-runner/_work/electron/electron/node-v15.10.0-linux-x64/bin:$PATH
         cd src
         export CHROMIUM_BUILDTOOLS_PATH=`pwd`/buildtools
