@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lin Cheng <lin_cheng@dell.com>
+Date: Mon, 22 Mar 2021 12:43:39 +0530
+Subject: fix: Not allow API config of TLS1.3 cipher suites
+
+
+diff --git a/src/node_crypto.cc b/src/node_crypto.cc
+index ee42630ad06da91b6c776447cf1350bd449c7cf4..ceb80bc5676dd1a336ed6555497521417fdd99bc 100644
+--- a/src/node_crypto.cc
++++ b/src/node_crypto.cc
+@@ -1121,7 +1121,7 @@ void SecureContext::AddRootCerts(const FunctionCallbackInfo<Value>& args) {
+ 
+ void SecureContext::SetCipherSuites(const FunctionCallbackInfo<Value>& args) {
+   // BoringSSL doesn't allow API config of TLS1.3 cipher suites.
+-#ifndef OPENSSL_IS_BORINGSSL
++#if 0 //ndef OPENSSL_IS_BORINGSSL
+   SecureContext* sc;
+   ASSIGN_OR_RETURN_UNWRAP(&sc, args.Holder());
+   Environment* env = sc->env();
