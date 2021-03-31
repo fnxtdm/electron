@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lin Cheng <lin_cheng@dell.com>
+Date: Tue, 30 Mar 2021 20:33:08 -0700
+Subject: fix use openssl shared library replace boringssl
+
+
+diff --git a/BUILD.gn b/BUILD.gn
+index 99192976f2bdfd900240aa58b8989fe2c9d8c771..562aee525c4bcc855a2a37f0a4c936e327a050fc 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -209,7 +209,10 @@ component("node_lib") {
+   configs += [ ":node_internal_config" ]
+   public_configs = [ ":node_lib_config" ]
+   include_dirs = [ "src" ]
+-  libs = []
++  libs = [
++    "ssl",
++    "crypto",
++  ]
+   frameworks = []
+   cflags_cc = [
+     "-Wno-deprecated-declarations",
+@@ -259,7 +262,7 @@ component("node_lib") {
+   }
+ 
+   if (node_use_openssl) {
+-    deps += [ "//third_party/boringssl" ]
++    # deps += [ "//third_party/boringssl" ]
+     sources += [
+       "src/node_crypto.cc",
+       "src/node_crypto.h",
