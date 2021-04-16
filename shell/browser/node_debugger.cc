@@ -26,7 +26,7 @@ void NodeDebugger::Start() {
   auto* inspector = env_->inspector_agent();
   if (inspector == nullptr)
     return;
-
+#if 0
   // DebugOptions will already have been set by ProcessGlobalArgs,
   // so just pull the ones from there to pass to the InspectorAgent
   const auto debug_options = env_->options()->debug_options();
@@ -42,6 +42,7 @@ void NodeDebugger::Start() {
   if (inspector->options().break_node_first_line) {
     inspector->PauseOnNextJavascriptStatement("Break at bootstrap");
   }
+#endif
 }
 
 void NodeDebugger::Stop() {
