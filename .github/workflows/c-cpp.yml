@@ -2,9 +2,9 @@ name: Linux C/C++ CI
 
 on:
   push:
-    branches: [ v10.4.0.1 ]
+    branches: [ v11.3.0.dell ]
   pull_request:
-    branches: [ v10.4.0.1 ]
+    branches: [ v11.3.0.dell ]
 
 defaults:
   run:
@@ -13,7 +13,7 @@ defaults:
 jobs:
   build:
 
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted, linux, x64, OptiPlex]
     env:
       DEPOT_TOOLS_PATH: /opt/depot_tools/
 
@@ -44,7 +44,7 @@ jobs:
         gclient sync --with_branch_heads --with_tags
         
         cd src/electron/
-        git checkout v10.4.0.1
+        git checkout v11.3.0.dell
         gclient sync -f
         cd -
 
