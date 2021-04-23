@@ -1,0 +1,108 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lin Cheng <lin_cheng@dell.com>
+Date: Thu, 22 Apr 2021 21:02:04 -0400
+Subject: extern node lib internal API for shell
+
+Fix build issues when ldd link error, need extern some node lib internal
+API, for node lib change to shared library.
+
+diff --git a/src/async_wrap.h b/src/async_wrap.h
+index 81d0db01c950ec3db0db5bb02439002c80480295..69bb738d173bfe0499afbee52dc07a851c85f1ff 100644
+--- a/src/async_wrap.h
++++ b/src/async_wrap.h
+@@ -101,7 +101,7 @@ namespace node {
+ class Environment;
+ class DestroyParam;
+ 
+-class AsyncWrap : public BaseObject {
++class NODE_EXTERN AsyncWrap : public BaseObject {
+  public:
+   enum ProviderType {
+ #define V(PROVIDER)                                                           \
+diff --git a/src/env.h b/src/env.h
+index 4fe2eb3b7699efcab87c377743a955effbbfd9de..7ab4a4df39d92fb6cf9ccabbe9a65ffc5848d3f0 100644
+--- a/src/env.h
++++ b/src/env.h
+@@ -815,7 +815,7 @@ class CleanupHookCallback {
+   uint64_t insertion_order_counter_;
+ };
+ 
+-class Environment : public MemoryRetainer {
++class NODE_EXTERN Environment : public MemoryRetainer {
+  public:
+   Environment(const Environment&) = delete;
+   Environment& operator=(const Environment&) = delete;
+diff --git a/src/node_internals.h b/src/node_internals.h
+index 0a01dcd8ed194b205d7fe510451315610e5a60be..7b763e5973b5e086c4d33c7bbfe521286ba4a86e 100644
+--- a/src/node_internals.h
++++ b/src/node_internals.h
+@@ -89,7 +89,7 @@ void PrintCaughtException(v8::Isolate* isolate,
+                           v8::Local<v8::Context> context,
+                           const v8::TryCatch& try_catch);
+ 
+-void ResetStdio();  // Safe to call more than once and from signal handlers.
++NODE_EXTERN void ResetStdio();  // Safe to call more than once and from signal handlers.
+ #ifdef __POSIX__
+ void SignalExit(int signal, siginfo_t* info, void* ucontext);
+ #endif
+diff --git a/src/node_native_module_env.h b/src/node_native_module_env.h
+index bc36be75109639a44304d66c60a049f654c9e687..1c38f34d81add0417793976f092c1a3d9e70c634 100644
+--- a/src/node_native_module_env.h
++++ b/src/node_native_module_env.h
+@@ -12,7 +12,7 @@ namespace native_module {
+ 
+ extern const bool has_code_cache;
+ 
+-class NativeModuleEnv {
++class NODE_EXTERN NativeModuleEnv {
+  public:
+   static void Initialize(v8::Local<v8::Object> target,
+                          v8::Local<v8::Value> unused,
+diff --git a/src/node_perf_common.h b/src/node_perf_common.h
+index ba396740c27de55de819df3810a6fb8121af1dec..af52996e361f016b2b27a6545b06bef920bf7c0a 100644
+--- a/src/node_perf_common.h
++++ b/src/node_perf_common.h
+@@ -53,7 +53,7 @@ enum PerformanceEntryType {
+   NODE_PERFORMANCE_ENTRY_TYPE_INVALID
+ };
+ 
+-class PerformanceState {
++class NODE_EXTERN PerformanceState {
+  public:
+   explicit PerformanceState(v8::Isolate* isolate) :
+     root(
+diff --git a/src/tracing/trace_event.h b/src/tracing/trace_event.h
+index be0f55a409a71bf9c1763c36fdc252857228742e..842bebb70c15687d8de52a6f0c04f9c832d1309a 100644
+--- a/src/tracing/trace_event.h
++++ b/src/tracing/trace_event.h
+@@ -310,7 +310,7 @@ const int kZeroNumArgs = 0;
+ const decltype(nullptr) kGlobalScope = nullptr;
+ const uint64_t kNoId = 0;
+ 
+-class TraceEventHelper {
++class NODE_EXTERN TraceEventHelper {
+  public:
+   static v8::TracingController* GetTracingController();
+   static void SetTracingController(v8::TracingController* controller);
+diff --git a/src/util.h b/src/util.h
+index a50cc1cf23b8a3f0aa6e961f7d817a02d58a5e0e..6f893299a43185013ad5a83eea076bebd6d42e1e 100644
+--- a/src/util.h
++++ b/src/util.h
+@@ -47,6 +47,8 @@
+ #include <unordered_map>
+ #include <utility>
+ 
++#include "node.h"
++
+ #ifdef __GNUC__
+ #define MUST_USE_RESULT __attribute__((warn_unused_result))
+ #else
+@@ -116,7 +118,7 @@ struct AssertionInfo {
+ };
+ [[noreturn]] void Assert(const AssertionInfo& info);
+ [[noreturn]] void Abort();
+-void DumpBacktrace(FILE* fp);
++NODE_EXTERN void DumpBacktrace(FILE* fp);
+ 
+ // Windows 8+ does not like abort() in Release mode
+ #ifdef _WIN32
