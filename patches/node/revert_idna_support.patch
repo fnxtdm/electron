@@ -1,0 +1,67 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lin Cheng <lin_cheng@dell.com>
+Date: Thu, 22 Apr 2021 21:56:59 -0400
+Subject: revert IDNA Support
+
+Not converts parts of the domain name that have non-ASCII characters.
+
+diff --git a/lib/dns.js b/lib/dns.js
+index 0393069f811711fc31876ebedb2c91dc1eb1cdbe..614c7f380508e3e19f41d43d3b30071bb0025db1 100644
+--- a/lib/dns.js
++++ b/lib/dns.js
+@@ -28,7 +28,6 @@ const {
+ } = primordials;
+ 
+ const cares = internalBinding('cares_wrap');
+-const { toASCII } = require('internal/idna');
+ const { isIP } = require('internal/net');
+ const { customPromisifyArgs } = require('internal/util');
+ const errors = require('internal/errors');
+@@ -145,7 +144,7 @@ function lookup(hostname, options, callback) {
+   req.oncomplete = all ? onlookupall : onlookup;
+ 
+   const err = cares.getaddrinfo(
+-    req, toASCII(hostname), family, hints, verbatim
++    req, hostname, family, hints, verbatim
+   );
+   if (err) {
+     process.nextTick(callback, dnsException(err, 'getaddrinfo', hostname));
+@@ -224,7 +223,7 @@ function resolver(bindingName) {
+     req.hostname = name;
+     req.oncomplete = onresolve;
+     req.ttl = !!(options && options.ttl);
+-    const err = this._handle[bindingName](req, toASCII(name));
++    const err = this._handle[bindingName](req, name);
+     if (err) throw dnsException(err, bindingName, name);
+     return req;
+   }
+diff --git a/lib/url.js b/lib/url.js
+index cc36216f9eb916272a0a55ac5bb76773fdf1f94d..8441a4678a3ab93514a955bc917bb04aa96201b7 100644
+--- a/lib/url.js
++++ b/lib/url.js
+@@ -28,7 +28,6 @@ const {
+   SafeSet,
+ } = primordials;
+ 
+-const { toASCII } = require('internal/idna');
+ const { encodeStr, hexTable } = require('internal/querystring');
+ 
+ const {
+@@ -379,17 +378,6 @@ Url.prototype.parse = function parse(url, parseQueryString, slashesDenoteHost) {
+       this.hostname = this.hostname.toLowerCase();
+     }
+ 
+-    if (!ipv6Hostname) {
+-      // IDNA Support: Returns a punycoded representation of "domain".
+-      // It only converts parts of the domain name that
+-      // have non-ASCII characters, i.e. it doesn't matter if
+-      // you call it with a domain that already is ASCII-only.
+-
+-      // Use lenient mode (`true`) to try to support even non-compliant
+-      // URLs.
+-      this.hostname = toASCII(this.hostname, true);
+-    }
+-
+     const p = this.port ? ':' + this.port : '';
+     const h = this.hostname || '';
+     this.host = h + p;

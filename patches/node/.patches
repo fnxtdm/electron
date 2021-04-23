@@ -30,3 +30,5 @@ fix_parallel_test-crypto-ecdh-convert-key_to_use_compatible_group.patch
 src_inline_asynccleanuphookhandle_in_headers.patch
 use_openssl_shared_library_replace_boringssl.patch
 extern_node_lib_internal_api_for_shell.patch
+revert_idna_support.patch
+feat_add_openssl_setkey_with_engine_for_smartcard.patch
